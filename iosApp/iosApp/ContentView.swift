@@ -1,30 +1,92 @@
 import SwiftUI
 import Combine
 import Shared
+import Kingfisher
 
 
-class TimerListViewModel: ObservableObject {
-    @Published var timers: [SharedTimer] = []
+enum ListItemContentType {
+    case image
+    case timer
+}
 
-    func loadTimers() {
-        timers = TimerRepository().getTimers()
+class ImageModel: ObservableObject {
+    let url: String
+    
+    init(url: String) {
+        self.url = url
     }
 }
+
+class ListItemModel: ObservableObject, Identifiable {
+    let id = UUID()
+    let contentType: ListItemContentType
+    let timer: SharedTimer?
+    let image: ImageModel?
+
+    init(contentType: ListItemContentType, timer: SharedTimer? = nil, image: ImageModel? = nil) {
+        self.contentType = contentType
+        self.timer = timer
+        self.image = image
+    }
+}
+
+
+
+class ListViewModel: ObservableObject {
+    @Published var items: [ListItemModel] = []
+
+    init() {
+        loadData()
+    }
+
+    func loadData() {
+        let commonItems = ItemsRepository().getItems()
+
+        var tempItems: [ListItemModel] = []
+
+        for item in commonItems {
+            switch item.contentType {
+                case .timer:
+                    if let timerItem = item as? ListItem.TimerItem {
+                        tempItems.append(ListItemModel(contentType: .timer, timer: timerItem.timer))
+                    }
+                case .image:
+                    if let imageItem = item as? ListItem.ImageItem {
+                        let imageModel = ImageModel(url: imageItem.image.url)
+                        tempItems.append(ListItemModel(contentType: .image, image: imageModel))
+                    }
+                default:
+                    break
+                }
+        }
+
+        items = tempItems
+    }
+}
+
 
 
 struct ContentView: View {
-    
-    @StateObject private var viewModel = TimerListViewModel()
+    @ObservedObject var viewModel = ListViewModel()
 
-    var body: some View {
-        List(viewModel.timers, id: \.id) { timer in
-            TimerItemView(timer: timer)
-        }
-        .onAppear {
-            viewModel.loadTimers()
-        }
-    }
-}
+       var body: some View {
+           List(viewModel.items) { item in
+               switch item.contentType {
+                case .timer:
+                    if let timer = item.timer {
+                        TimerItemView(timer: timer)
+                            .padding()
+                    }
+                case .image:
+                    if let imageUrl = item.image?.url {
+                        ImageItemView(imageUrl: imageUrl)
+                            .padding()
+                    }
+                }
+           }
+       }
+   }
+
 
 struct TimerItemView: View {
     @ObservedObject var timer: TimerWrapper
@@ -65,6 +127,31 @@ struct TimerItemView: View {
                 }
                 .padding()
     }
+}
+
+struct ImageItemView: View {
+    private let imageUrl: String
+        
+        init(imageUrl: String) {
+            self.imageUrl = imageUrl
+        }
+        
+        var body: some View {
+            KFImage(URL(string: imageUrl))
+                .placeholder {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: 50)
+                }
+                .retry(maxCount: 3, interval: .seconds(2))  // Retry mechanism
+                .onFailure { error in
+                    print("Error: \(error.localizedDescription)")
+                }
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity, maxHeight: 50)
+                .padding()
+        }
+    
 }
 
 class TimerWrapper: ObservableObject {

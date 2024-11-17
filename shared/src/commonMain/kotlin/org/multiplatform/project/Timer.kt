@@ -27,9 +27,3 @@ class SharedTimer(val id: Int) {
         job = null
     }
 }
-
-object TimerRepository {
-    private val timers = List(100) { SharedTimer(it) }
-
-    fun getTimers(): List<SharedTimer> = timers
-}

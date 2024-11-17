@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TimerViewModel : ViewModel() {
-    private val _timers = MutableStateFlow<List<SharedTimer>>(emptyList())
-    val timers: StateFlow<List<SharedTimer>> get() = _timers
+    private val _items = MutableStateFlow<List<ListItem>>(emptyList())
+    val items: StateFlow<List<ListItem>> get() = _items
 
     init {
         loadTimers()
@@ -16,7 +16,7 @@ class TimerViewModel : ViewModel() {
 
     private fun loadTimers() {
         viewModelScope.launch {
-            _timers.value = TimerRepository.getTimers()
+            _items.value = ItemsRepository.getItems()
         }
     }
 
