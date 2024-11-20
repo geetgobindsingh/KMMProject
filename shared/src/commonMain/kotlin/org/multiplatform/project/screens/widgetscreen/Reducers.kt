@@ -5,8 +5,9 @@ import org.multiplatform.project.ListItem
 import org.multiplatform.project.ListItemContentType
 import org.multiplatform.project.screens.widgetscreen.reducers.itemReducer
 import org.reduxkotlin.Reducer
+import org.reduxkotlin.combineReducers
 
-val screenStateReducer: Reducer<WidgetScreenState> = { state, action ->
+val widgetFetchReducer: Reducer<WidgetScreenState> = { state, action ->
     when (action) {
         is Actions.FetchingItemsStartedAction -> state.copy(
             isLoading = true,
@@ -60,3 +61,5 @@ val timerReducer: Reducer<WidgetScreenState> = { state, action ->
         else -> state
     }
 }
+
+val widgetScreenReducer: Reducer<WidgetScreenState> = combineReducers(widgetFetchReducer, timerReducer)

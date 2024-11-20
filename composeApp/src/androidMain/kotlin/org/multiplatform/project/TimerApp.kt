@@ -3,12 +3,14 @@ package org.multiplatform.project
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,24 +32,45 @@ import org.multiplatform.project.screens.widgetscreen.ui.UiActions
 fun TimerApp(viewModel: TimerViewModel) {
     val widgetScreenState = viewModel.widgetScreenState.collectAsStateWithLifecycle(WidgetScreenState.INITIAL_STATE)
 
-    val items = widgetScreenState.value.widgets
-    LazyColumn {
-        items(
-            count = items.size,
-            key = { index ->
-                when(items[index].contentType) {
-                    ListItemContentType.TIMER -> { (items[index] as ListItem.TimerItem).timer.id}
-                    ListItemContentType.IMAGE -> { (items[index] as ListItem.ImageItem).id}
+    val loading = widgetScreenState.value.isLoading
+    if (loading) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val items = widgetScreenState.value.widgets
+        LazyColumn {
+            items(
+                count = items.size,
+                key = { index ->
+                    when (items[index].contentType) {
+                        ListItemContentType.TIMER -> {
+                            (items[index] as ListItem.TimerItem).timer.id
+                        }
+
+                        ListItemContentType.IMAGE -> {
+                            (items[index] as ListItem.ImageItem).id
+                        }
+                    }
+                },
+                contentType = { index ->
+                    items[index].contentType
+                },
+            ) { index ->
+                val listItem = items[index]
+                when (listItem.contentType) {
+                    ListItemContentType.TIMER -> {
+                        TimerItemView(
+                            listItem as ListItem.TimerItem,
+                            viewModel::startTimer,
+                            viewModel::stopTimer
+                        )
+                    }
+
+                    ListItemContentType.IMAGE -> {
+                        ImageItemView(listItem as ListItem.ImageItem)
+                    }
                 }
-            },
-            contentType = { index ->
-                items[index].contentType
-            },
-        ) { index ->
-            val listItem = items[index]
-            when(listItem.contentType) {
-                ListItemContentType.TIMER -> { TimerItemView(listItem as ListItem.TimerItem, viewModel::startTimer, viewModel::stopTimer) }
-                ListItemContentType.IMAGE -> { ImageItemView(listItem as ListItem.ImageItem) }
             }
         }
     }

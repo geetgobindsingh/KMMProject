@@ -16,7 +16,7 @@ class WidgetScreenStore(
     private val uiContext: CoroutineContext
 ) {
     val store = createStore(
-        combineReducers(screenStateReducer, timerReducer),
+        combineReducers(widgetScreenReducer),
         WidgetScreenState.INITIAL_STATE,
         applyMiddleware(
             createThunkMiddleware(),
