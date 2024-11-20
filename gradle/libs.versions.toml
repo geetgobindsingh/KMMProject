@@ -16,6 +16,8 @@ junit = "4.13.2"
 kotlin = "2.0.21"
 kotlinxCoroutinesCore = "1.9.0"
 coil-compose = "3.0.3"
+redux-kotlin-version = "0.6.1"
+redux-kotlin-thunk-version = "0.6.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -33,6 +35,8 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil-compose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil-compose" }
+redux-kotlin = { group = "org.reduxkotlin", name = "redux-kotlin", version.ref = "redux-kotlin-version"}
+redux-kotlin-thunk = { group = "org.reduxkotlin", name = "redux-kotlin-thunk", version.ref = "redux-kotlin-thunk-version"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
