@@ -26,7 +26,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.multiplatform.project.modifiers.recomposeHighlighter
 import org.multiplatform.project.screens.widgetscreen.WidgetScreenState
-import org.multiplatform.project.screens.widgetscreen.ui.UiActions
 
 @Composable
 fun TimerApp(viewModel: TimerViewModel) {

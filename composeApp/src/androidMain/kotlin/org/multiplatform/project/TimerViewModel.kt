@@ -9,11 +9,21 @@ import kotlinx.coroutines.flow.asStateFlow
 
 import org.multiplatform.project.screens.widgetscreen.WidgetScreenState
 import org.multiplatform.project.screens.widgetscreen.WidgetScreenStore
+import org.multiplatform.project.screens.widgetscreen.middleware.Navigator
+import org.multiplatform.project.screens.widgetscreen.middleware.Screen
 import org.multiplatform.project.screens.widgetscreen.ui.UiActions
 
 class TimerViewModel : ViewModel() {
 
-    private val widgetScreenStore: WidgetScreenStore = WidgetScreenStore(Dispatchers.IO, viewModelScope.coroutineContext)
+    private val widgetScreenStore: WidgetScreenStore = WidgetScreenStore(
+        Dispatchers.IO,
+        viewModelScope.coroutineContext,
+        navigator = object : Navigator {
+            override fun goto(screen: Screen) {
+                // go to screen
+            }
+        }
+    )
 
     private val _widgetScreenState: MutableStateFlow<WidgetScreenState> = MutableStateFlow(widgetScreenStore.state)
 
@@ -32,5 +42,10 @@ class TimerViewModel : ViewModel() {
 
     fun stopTimer(timer: SharedTimer) {
         widgetScreenStore.dispatch(UiActions.StopTimer(timer))
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        widgetScreenStore.removeStateUpdateListener()
     }
 }

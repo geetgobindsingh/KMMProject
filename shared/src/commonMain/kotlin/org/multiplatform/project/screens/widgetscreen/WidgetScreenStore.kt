@@ -3,8 +3,12 @@ package org.multiplatform.project.screens.widgetscreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
+import org.multiplatform.project.screens.widgetscreen.middleware.Navigator
+import org.multiplatform.project.screens.widgetscreen.middleware.loggerMiddleware
+import org.multiplatform.project.screens.widgetscreen.middleware.navigationMiddleware
 import org.multiplatform.project.screens.widgetscreen.middleware.uiActionMiddleware
 import org.multiplatform.project.screens.widgetscreen.util.NetworkThunks
+import org.reduxkotlin.StoreSubscription
 import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.combineReducers
 import org.reduxkotlin.createStore
@@ -13,21 +17,26 @@ import kotlin.coroutines.CoroutineContext
 
 class WidgetScreenStore(
     networkContext: CoroutineContext,
-    private val uiContext: CoroutineContext
+    private val uiContext: CoroutineContext,
+    private val navigator: Navigator,
 ) {
+    private lateinit var subscription: StoreSubscription
+
     val store = createStore(
         combineReducers(widgetScreenReducer),
         WidgetScreenState.INITIAL_STATE,
         applyMiddleware(
+            loggerMiddleware,
             createThunkMiddleware(),
-            uiActionMiddleware(NetworkThunks(networkContext))
+            uiActionMiddleware(NetworkThunks(networkContext)),
+            navigationMiddleware(navigator = navigator)
         )
     )
 
     fun addStateUpdateListener(
         sendUpdate: (WidgetScreenState) -> Unit
     ) {
-        store.subscribe {
+        subscription = store.subscribe {
             sendUpdate(state)
         }
     }
@@ -36,6 +45,10 @@ class WidgetScreenStore(
         CoroutineScope(uiContext).launch {
             store.dispatch(action)
         }
+    }
+
+    fun removeStateUpdateListener() {
+       //subscription.clear()
     }
 
 
