@@ -18,15 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.multiplatform.project.modifiers.recomposeHighlighter
+import org.multiplatform.project.screens.widgetscreen.WidgetScreenState
 
 @Composable
 fun TimerApp(viewModel: TimerViewModel) {
-    val items by viewModel.items.collectAsState()
+    val widgetScreenState = viewModel.widgetScreenState.collectAsStateWithLifecycle(WidgetScreenState.INITIAL_STATE)
 
+    val items = widgetScreenState.value.widgets
     LazyColumn {
         items(
             count = items.size,

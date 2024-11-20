@@ -28,6 +28,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.redux.kotlin)
+            implementation(libs.redux.kotlin.thunk)
         }
     }
 }
