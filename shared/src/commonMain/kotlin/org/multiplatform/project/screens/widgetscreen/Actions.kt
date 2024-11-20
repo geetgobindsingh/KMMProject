@@ -1,6 +1,7 @@
 package org.multiplatform.project.screens.widgetscreen
 
 import org.multiplatform.project.ListItem
+import org.multiplatform.project.SharedTimer
 import org.multiplatform.project.screens.widgetscreen.middleware.Screen
 
 sealed class Actions {
@@ -8,6 +9,10 @@ sealed class Actions {
     data class FetchingItemsSuccessAction(val items: List<ListItem>)
     data class FetchingItemsFailedAction(val message: String)
 
+    sealed class Timer {
+        data class StartTimerAction(val sharedTimer: SharedTimer)
+        data class StopTimerAction(val sharedTimer: SharedTimer)
+    }
 }
 
 

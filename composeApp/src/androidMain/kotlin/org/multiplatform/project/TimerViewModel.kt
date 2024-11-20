@@ -23,15 +23,14 @@ class TimerViewModel : ViewModel() {
         widgetScreenStore.addStateUpdateListener { state ->
             _widgetScreenState.value = state
         }
-        widgetScreenStore.dispatch(UiActions.Initialise())
+        widgetScreenStore.dispatch(UiActions.Initialise)
     }
 
-
     fun startTimer(timer: SharedTimer) {
-        timer.start()
+        widgetScreenStore.dispatch(UiActions.StartTimer(timer))
     }
 
     fun stopTimer(timer: SharedTimer) {
-        timer.stop()
+        widgetScreenStore.dispatch(UiActions.StopTimer(timer))
     }
 }

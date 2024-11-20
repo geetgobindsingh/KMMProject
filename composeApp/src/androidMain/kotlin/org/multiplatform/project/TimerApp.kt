@@ -24,6 +24,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.multiplatform.project.modifiers.recomposeHighlighter
 import org.multiplatform.project.screens.widgetscreen.WidgetScreenState
+import org.multiplatform.project.screens.widgetscreen.ui.UiActions
 
 @Composable
 fun TimerApp(viewModel: TimerViewModel) {
@@ -45,7 +46,7 @@ fun TimerApp(viewModel: TimerViewModel) {
         ) { index ->
             val listItem = items[index]
             when(listItem.contentType) {
-                ListItemContentType.TIMER -> { TimerItemView(listItem as ListItem.TimerItem) }
+                ListItemContentType.TIMER -> { TimerItemView(listItem as ListItem.TimerItem, viewModel::startTimer, viewModel::stopTimer) }
                 ListItemContentType.IMAGE -> { ImageItemView(listItem as ListItem.ImageItem) }
             }
         }
@@ -53,7 +54,10 @@ fun TimerApp(viewModel: TimerViewModel) {
 }
 
 @Composable
-fun TimerItemView(timerItem: ListItem.TimerItem) {
+fun TimerItemView(timerItem: ListItem.TimerItem,
+                  startTimer: (SharedTimer) -> Unit,
+                  stopTimer: (SharedTimer) -> Unit,
+                  ) {
     val time by timerItem.timer.time.collectAsState()
 
     Row(modifier = Modifier
@@ -61,11 +65,11 @@ fun TimerItemView(timerItem: ListItem.TimerItem) {
         .padding(16.dp)
         .recomposeHighlighter(), verticalAlignment = Alignment.CenterVertically) {
         Text(text = "Timer ${timerItem.timer.id}: $time", modifier = Modifier.weight(1f))
-        Button(onClick = timerItem.timer::start ) {
+        Button(onClick = { startTimer(timerItem.timer) } ) {
             Text(text = "Start")
         }
         Spacer(modifier = Modifier.width(8.dp))
-        Button(onClick = timerItem.timer::stop ) {
+        Button(onClick = { stopTimer(timerItem.timer) } ) {
             Text(text = "Stop")
         }
     }
