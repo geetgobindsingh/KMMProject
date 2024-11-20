@@ -5,13 +5,14 @@ import org.multiplatform.project.SharedTimer
 import org.multiplatform.project.screens.widgetscreen.middleware.Screen
 
 sealed class Actions {
-    class FetchingItemsStartedAction
+    object FetchingItemsStartedAction
     data class FetchingItemsSuccessAction(val items: List<ListItem>)
     data class FetchingItemsFailedAction(val message: String)
 
     sealed class Timer {
-        data class StartTimerAction(val sharedTimer: SharedTimer)
-        data class StopTimerAction(val sharedTimer: SharedTimer)
+        data class TimerStartedAction(val sharedTimer: SharedTimer)
+        data class IncrementAction(val sharedTimer: SharedTimer)
+        data class TimerStoppedAction(val sharedTimer: SharedTimer)
     }
 }
 

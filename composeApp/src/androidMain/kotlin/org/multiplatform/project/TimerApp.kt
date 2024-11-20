@@ -80,13 +80,12 @@ fun TimerItemView(timerItem: ListItem.TimerItem,
                   startTimer: (SharedTimer) -> Unit,
                   stopTimer: (SharedTimer) -> Unit,
                   ) {
-    val time by timerItem.timer.time.collectAsState()
 
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)
         .recomposeHighlighter(), verticalAlignment = Alignment.CenterVertically) {
-        Text(text = "Timer ${timerItem.timer.id}: $time", modifier = Modifier.weight(1f))
+        Text(text = "Timer ${timerItem.timer.id}: ${timerItem.timer.count}", modifier = Modifier.weight(1f))
         Button(onClick = { startTimer(timerItem.timer) } ) {
             Text(text = "Start")
         }

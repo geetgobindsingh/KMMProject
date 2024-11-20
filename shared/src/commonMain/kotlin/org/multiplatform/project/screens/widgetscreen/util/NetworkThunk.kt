@@ -17,8 +17,8 @@ class NetworkThunks(private val networkContext: CoroutineContext) : CoroutineSco
         get() = networkContext + job
 
     fun fetchItems(): Thunk<WidgetScreenState> = { dispatch, getState, extraArg ->
-        dispatch(Actions.FetchingItemsStartedAction())
-        launch {
+        dispatch(Actions.FetchingItemsStartedAction)
+        CoroutineScope(coroutineContext).launch {
             val result = ItemsRepository.getItems()
             delay(1000)
             if (result.isSuccess) {
@@ -29,4 +29,5 @@ class NetworkThunks(private val networkContext: CoroutineContext) : CoroutineSco
         }
     }
 }
+
 

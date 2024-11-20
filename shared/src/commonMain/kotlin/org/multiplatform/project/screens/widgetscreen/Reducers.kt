@@ -32,26 +32,40 @@ val widgetFetchReducer: Reducer<WidgetScreenState> = { state, action ->
 
 val timerReducer: Reducer<WidgetScreenState> = { state, action ->
     when (action) {
-        is Actions.Timer.StartTimerAction -> {
+        is Actions.Timer.IncrementAction -> {
             state.copy(widgets = state.widgets.map { widget ->
                 if (widget.contentType == ListItemContentType.TIMER) {
                     if ((widget as ListItem.TimerItem).timer.id == action.sharedTimer.id) {
-                        widget.timer.start()
+                        widget.copy(timer = widget.timer.copy(count = widget.timer.count + 1))
+                    } else {
+                        widget
                     }
-                    widget
                 } else {
                     widget
                 }
             })
         }
-
-        is Actions.Timer.StopTimerAction -> {
+        is Actions.Timer.TimerStartedAction -> {
             state.copy(widgets = state.widgets.map { widget ->
                 if (widget.contentType == ListItemContentType.TIMER) {
                     if ((widget as ListItem.TimerItem).timer.id == action.sharedTimer.id) {
-                        widget.timer.stop()
+                        widget.copy(timer = widget.timer.copy(job = action.sharedTimer.job, count = 0))
+                    } else {
+                        widget
                     }
+                } else {
                     widget
+                }
+            })
+        }
+        is Actions.Timer.TimerStoppedAction -> {
+            state.copy(widgets = state.widgets.map { widget ->
+                if (widget.contentType == ListItemContentType.TIMER) {
+                    if ((widget as ListItem.TimerItem).timer.id == action.sharedTimer.id) {
+                        widget.copy(timer = widget.timer.copy(job = action.sharedTimer.job, count = 0))
+                    } else {
+                        widget
+                    }
                 } else {
                     widget
                 }
