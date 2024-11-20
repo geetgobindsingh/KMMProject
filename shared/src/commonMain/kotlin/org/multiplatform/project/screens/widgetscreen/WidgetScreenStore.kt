@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import org.multiplatform.project.screens.widgetscreen.middleware.uiActionMiddleware
 import org.multiplatform.project.screens.widgetscreen.util.NetworkThunks
 import org.reduxkotlin.applyMiddleware
+import org.reduxkotlin.combineReducers
 import org.reduxkotlin.createStore
 import org.reduxkotlin.thunk.createThunkMiddleware
 import kotlin.coroutines.CoroutineContext
@@ -15,7 +16,7 @@ class WidgetScreenStore(
     private val uiContext: CoroutineContext
 ) {
     val store = createStore(
-        reducer,
+        combineReducers(screenStateReducer, timerReducer),
         WidgetScreenState.INITIAL_STATE,
         applyMiddleware(
             createThunkMiddleware(),
